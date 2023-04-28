@@ -5,6 +5,10 @@
 }
 body {
 	background-color: dodgerblue;
+	/* background-image: url("Untitled.png");
+	background-size: contain;
+	background-position-x: 20px;
+	background-position-y: 20px; */
 	color: white;
 	display: flex;
 	flex-direction: column;
@@ -31,8 +35,8 @@ button {
 	cursor: pointer;
 }
 .main {
-	width: 800px;
-	height: 600px;
+	width: 600px;
+	height: 450px;
 	position: relative;
 	top: 70px;
 }
@@ -51,7 +55,7 @@ button {
 	position: absolute;
 	right: 15px;
 	top: 15px;
-	font-size: 1.2em;
+	/* font-size: 1.2em; */
 	font-weight: bold;
 }
 /* .below {
