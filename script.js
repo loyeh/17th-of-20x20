@@ -126,6 +126,7 @@ function checkContact() {
 	}
 	if (ball.y + ball.size > canvas.height) {
 		window.location.reload();
+		return;
 	}
 	for (let i = 0; i < blockArr.length; i++) {
 		if (
