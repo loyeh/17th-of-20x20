@@ -10,11 +10,25 @@
 	</head>
 
 	<body>
-		<button>Show Rules</button>
+		<button onclick="showRules()">Show Rules</button>
 		<h1>Breakout!</h1>
 		<div class="main">
 			<canvas class="canvas" id="myCanvas" width="600" height="450"> </canvas>
 			<div class="score">Score: <span id="score"></span></div>
+		</div>
+		<div class="side hide">
+			<h3>How to play:</h3>
+			<p>
+				Use your right and left keys to move your paddle to bounce the ball up
+				and brake the blocks.<br />
+				If you miss the ball, your score and blocks will reset.
+				<br />
+				<br />
+				<br />
+				You can pause the game by pressing up key, and pressing down key will
+				resume the game from where you paused it.
+			</p>
+			<button onclick="closeRules()">close</button>
 		</div>
 		<div class="below"></div>
 		<script src="script.js"></script>

@@ -1,7 +1,10 @@
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 const player_score = document.getElementById("score");
+const side = document.querySelector(".side");
 let score = 0;
+let speedX;
+let speedY;
 // canvas.width = window.innerWidth;
 // canvas.height = window.innerHeight;
 
@@ -14,6 +17,13 @@ console.log(ctx);
 // 		blockBox(position.x, position.y);
 // 	});
 // });
+function showRules() {
+	side.classList.remove("hide");
+}
+
+function closeRules() {
+	side.classList.add("hide");
+}
 
 function blockBox(obj) {
 	ctx.fillStyle = obj.color;
@@ -21,7 +31,7 @@ function blockBox(obj) {
 	ctx.fillRect(obj.x, obj.y, obj.dx, obj.dy);
 }
 function blockArrayMaker(row, column) {
-	const blockArr = [];
+	let blockArr = [];
 	for (let i = 0; i < row; i++) {
 		for (let j = 0; j < column; j++) {
 			let x = 35 + 60 * i;
@@ -36,14 +46,14 @@ function blockArrayMaker(row, column) {
 	return blockArr;
 }
 
-const blockArr = blockArrayMaker(9, 5);
+let blockArr = blockArrayMaker(9, 5);
 const playerPad = {
 	x: 200,
 	y: 435,
 	dx: 80,
 	dy: 10,
 	color: "dodgerblue",
-	speed: 5,
+	speed: 8,
 };
 // blockArr.push(playerPad);
 function drawBlocks() {
@@ -57,8 +67,8 @@ const ball = {
 	x: 10,
 	y: 200,
 	size: 6,
-	dx: 2,
-	dy: 2,
+	dx: 3,
+	dy: 3,
 };
 
 function drawBall() {
@@ -69,7 +79,6 @@ function drawBall() {
 }
 function update() {
 	drawBlocks();
-
 	ball.x += ball.dx;
 	ball.y += ball.dy;
 	player_score.innerText = score;
@@ -82,33 +91,41 @@ function animation() {
 	update();
 	requestAnimationFrame(animation);
 }
+
 document.addEventListener("keydown", movePaddle);
 document.addEventListener("keyup", stopPaddle);
-
+let keyCount = 0;
 function movePaddle(e) {
+	console.log(e.key);
 	if (e.key === "ArrowRight") {
 		if (playerPad.x + playerPad.dx < canvas.width) {
-			// let int = setInterval(() => {
-			// 	playerPad.speed += 0.015;
-			// }, 100);
-			playerPad.speed = 5;
+			playerPad.speed = 7;
 		} else {
 			playerPad.speed = 0;
-			playerPad.x = canvas.width - playerPad.dx - 1;
-			// clearInterval(int);
+			playerPad.x = canvas.width - playerPad.dx - 5;
 		}
 	}
 	if (e.key === "ArrowLeft") {
 		if (playerPad.x > 0) {
-			// let int = setInterval(() => {
-			// 	playerPad.speed -= 0.015;
-			// }, 100);
-			playerPad.speed = -5;
+			playerPad.speed = -7;
 		} else {
 			playerPad.speed = 0;
-			playerPad.x = 1;
-			// clearInterval(int);
+			playerPad.x = 5;
 		}
+	}
+	if (e.key === "ArrowUp") {
+		if (keyCount == 0) {
+			speedX = ball.dx;
+			speedY = ball.dy;
+			ball.dx = 0;
+			ball.dy = 0;
+			keyCount++;
+		}
+	}
+	if (e.key === "ArrowDown") {
+		ball.dx = speedX;
+		ball.dy = speedY;
+		keyCount = 0;
 	}
 	playerPad.x += playerPad.speed;
 }
@@ -125,15 +142,17 @@ function checkContact() {
 		ball.dy *= -1;
 	}
 	if (ball.y + ball.size > canvas.height) {
-		window.location.reload();
+		blockArr = blockArrayMaker(9, 5);
+		score = 0;
+		ball.dy *= -1;
 		return;
 	}
 	for (let i = 0; i < blockArr.length; i++) {
 		if (
-			ball.x + ball.size > blockArr[i].x &&
-			ball.x - ball.size < blockArr[i].x + blockArr[i].dx &&
-			ball.y - ball.size > blockArr[i].y &&
-			ball.y + ball.size < blockArr[i].y + blockArr[i].dy
+			ball.x + ball.size >= blockArr[i].x &&
+			ball.x - ball.size <= blockArr[i].x + blockArr[i].dx &&
+			ball.y >= blockArr[i].y &&
+			ball.y <= blockArr[i].y + blockArr[i].dy
 		) {
 			ball.dx *= -1;
 			blockArr.splice(i, 1);
@@ -141,10 +160,10 @@ function checkContact() {
 			break;
 		}
 		if (
-			ball.y - ball.size < blockArr[i].y + blockArr[i].dy &&
-			ball.y + ball.size > blockArr[i].y &&
-			ball.x + ball.size > blockArr[i].x &&
-			ball.x - ball.size < blockArr[i].x + blockArr[i].dx
+			ball.y - ball.size <= blockArr[i].y + blockArr[i].dy &&
+			ball.y + ball.size >= blockArr[i].y &&
+			ball.x >= blockArr[i].x &&
+			ball.x <= blockArr[i].x + blockArr[i].dx
 		) {
 			ball.dy *= -1;
 			blockArr.splice(i, 1);
@@ -154,9 +173,9 @@ function checkContact() {
 	}
 
 	if (
-		ball.y + ball.size > playerPad.y &&
-		ball.x > playerPad.x &&
-		ball.x < playerPad.x + playerPad.dx
+		ball.y + ball.size >= playerPad.y &&
+		ball.x >= playerPad.x &&
+		ball.x <= playerPad.x + playerPad.dx
 	) {
 		ball.dy *= -1;
 	}
